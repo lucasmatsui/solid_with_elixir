@@ -69,13 +69,23 @@ defmodule Partner do
   def change_cnpj(%Partner{} = partner, %Cnpj{} = cnpj) do
     %{partner | cnpj: cnpj}
   end
+
+  def calculate_projects_points(%Partner{installed_projects: installed_projects}) do
+    installed_projects * 2.9
+  end
 end
 
-Partner.new(
-  "Lucas",
-  Email.new("lucas-matsui@hotmail.com"),
-  Cnpj.new("490.359.249/02"),
-  9
-)
-|> Partner.change_email(Email.new("kenzo@gmail.com"))
-|> Partner.change_cnpj(Cnpj.new("420.239.425/92"))
+partner =
+  Partner.new(
+    "Lucas",
+    Email.new("lucas-matsui@hotmail.com"),
+    Cnpj.new("490.359.249/02"),
+    9
+  )
+  |> Partner.change_email(Email.new("kenzo@gmail.com"))
+  |> Partner.change_cnpj(Cnpj.new("420.239.425/92"))
+
+partner
+|> IO.inspect()
+|> Partner.calculate_projects_points()
+|> IO.inspect()

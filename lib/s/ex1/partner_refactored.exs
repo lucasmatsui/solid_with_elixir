@@ -22,22 +22,6 @@ defmodule Partner do
     }
   end
 
-  def valid_email(%Partner{email: email} = partner) do
-    unless String.contains?(email, "@") do
-      raise ArgumentError, message: "invalid email"
-    end
-
-    partner
-  end
-
-  def valid_cnpj(%Partner{cnpj: cnpj} = partner) do
-    unless String.contains?(cnpj, ".") do
-      raise ArgumentError, message: "invalid cnpj"
-    end
-
-    partner
-  end
-
   def change_email(%Partner{} = partner, email) do
     %{partner | email: email}
   end
@@ -51,6 +35,26 @@ defmodule Partner do
   end
 end
 
+defmodule PartnerRepository do
+  def save_in_db(%Partner{} = partner) do
+    Repo.save(partner)
+    nil
+  end
+
+  @spec get_partner_by_id(integer()) :: Partner.t()
+  def get_partner_by_id(id) do
+    response = Repo.get_by_id(id)
+
+    Partner.new(
+      id: response.id,
+      name: response.name,
+      email: response.email,
+      cnpj: response.cnpj,
+      installed_projects: response.installed_projects,
+    )
+  end
+end
+
 partner =
   Partner.new(
     "Lucas",
@@ -58,14 +62,6 @@ partner =
     "490.359.249/02",
     7
   )
-  |> Partner.valid_email()
-  |> Partner.valid_cnpj()
-  |> Partner.change_email("kenzo@gmail.com")
-  |> Partner.change_cnpj("420.239.425/92")
-  |> Partner.valid_email()
-  |> Partner.valid_cnpj()
 
-partner
-|> IO.inspect()
-|> Partner.calculate_projects_points()
-|> IO.inspect()
+PartnerRepository.save_in_db(partner)
+PartnerRepository.get_partner_by_id(partner.id)
