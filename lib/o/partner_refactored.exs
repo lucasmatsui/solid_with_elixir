@@ -59,7 +59,7 @@ defmodule IsLevel1 do
     partner.installed_projects * 0.1 |> IO.inspect(label: "Nivel 1")
   end
 
-  def calculate_points(_partner), do: -1
+  def calculate_points(_partner), do: nil
 end
 
 defmodule IsLevel2AndInstalledProjectsMoreThan5 do
@@ -70,7 +70,7 @@ defmodule IsLevel2AndInstalledProjectsMoreThan5 do
       partner.installed_projects * 0.2 |> IO.inspect(label: "Nivel 2")
   end
 
-  def calculate_points(_partner), do: -1
+  def calculate_points(_partner), do: nil
 end
 
 defmodule IsLevel3 do
@@ -80,7 +80,7 @@ defmodule IsLevel3 do
     partner.installed_projects * 0.3 |> IO.inspect(label: "Nivel 3")
   end
 
-  def calculate_points(_partner), do: -1
+  def calculate_points(_partner), do: nil
 end
 
 defmodule IsLevel4AndInstalledProjectsMoreThan8 do
@@ -91,7 +91,7 @@ defmodule IsLevel4AndInstalledProjectsMoreThan8 do
       partner.installed_projects * 0.4 |> IO.inspect(label: "Nivel 4")
   end
 
-  def calculate_points(_partner), do: -1
+  def calculate_points(_partner), do: nil
 end
 
 defmodule IsLevel5AndInstalledProjectsMoreThan15 do
@@ -102,7 +102,7 @@ defmodule IsLevel5AndInstalledProjectsMoreThan15 do
       partner.installed_projects * 0.5 |> IO.inspect(label: "Nivel 5")
   end
 
-  def calculate_points(_partner), do: -1
+  def calculate_points(_partner), do: nil
 end
 
 defmodule IsLevel6AndInstalledProjectsMoreThan35 do
@@ -113,7 +113,7 @@ defmodule IsLevel6AndInstalledProjectsMoreThan35 do
       partner.installed_projects * 0.8 |> IO.inspect(label: "Nivel 6")
   end
 
-  def calculate_points(_partner), do: -1
+  def calculate_points(_partner), do: nil
 end
 
 defmodule NoPointsToCalculate do
@@ -129,18 +129,17 @@ defmodule CalculateBenefitPointsHandler do
   def execute(rules, %Partner{} = partner) do
     Enum.reduce_while(rules, 0, fn rule, acc ->
       result = rule.calculate_points(partner)
-      if result == -1, do: {:cont, acc}, else: {:halt, result}
+      if is_nil(result), do: {:cont, acc}, else: {:halt, result}
     end)
   end
 end
 
-partner =
-  Partner.new(
-    "Lucas",
-    "lucas-matsui@hotmail.com",
-    "84.752.970/0001-33",
-    5,
-    2
-  )
-
-Partner.calculate_benefit_points(partner)
+Partner.new(
+  "Lucas",
+  "lucas-matsui@hotmail.com",
+  "84.752.970/0001-33",
+  15,
+  4
+)
+|> Partner.calculate_benefit_points()
+|> IO.inspect()
